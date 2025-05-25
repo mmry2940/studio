@@ -1,23 +1,31 @@
+
 "use client";
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import VmAutoConfigForm from './vm-auto-config-form';
-import { Play, StopCircle, Settings2, MonitorSmartphone, Bot } from 'lucide-react';
+import { Play, StopCircle, Settings2, MonitorSmartphone, Cpu, MemoryStick, HardDrive, Laptop, SlidersHorizontal } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function VmControls() {
   const [vmStatus, setVmStatus] = useState<'stopped' | 'running' | 'pending'>('stopped');
   const { toast } = useToast();
 
+  // State for manual configuration
+  const [manualCpu, setManualCpu] = useState<number>(2);
+  const [manualRam, setManualRam] = useState<number>(4);
+  const [manualDisk, setManualDisk] = useState<number>(50);
+  const [manualOs, setManualOs] = useState<string>('linux');
+
   const handleStartVm = () => {
     setVmStatus('pending');
     toast({ title: 'Starting VM...', description: 'Please wait while the virtual machine boots up.' });
-    // Simulate VM start
     setTimeout(() => {
       setVmStatus('running');
       toast({ title: 'VM Started', description: 'The virtual machine is now running.', variant: 'default' });
@@ -27,7 +35,6 @@ export default function VmControls() {
   const handleStopVm = () => {
     setVmStatus('pending');
     toast({ title: 'Stopping VM...', description: 'Please wait while the virtual machine shuts down.' });
-    // Simulate VM stop
     setTimeout(() => {
       setVmStatus('stopped');
       toast({ title: 'VM Stopped', description: 'The virtual machine has been shut down.', variant: 'default' });
@@ -39,7 +46,14 @@ export default function VmControls() {
       title: 'Display Setting Changed',
       description: `Display set to: ${value}`,
     });
-    // Placeholder for actual resize logic
+  };
+
+  const handleApplyManualConfig = () => {
+    toast({
+      title: 'Manual Configuration Applied',
+      description: `VM configured with: ${manualCpu} Cores, ${manualRam}GB RAM, ${manualDisk}GB Disk, OS: ${manualOs.toUpperCase()}`,
+    });
+    // Placeholder for actual config application logic
   };
 
   return (
@@ -107,9 +121,92 @@ export default function VmControls() {
 
       <Separator className="bg-sidebar-border" />
 
-      <div className="flex-grow"> {/* This div will take remaining space if VmAutoConfigForm is shorter */}
-        <VmAutoConfigForm />
-      </div>
+      {/* AI Configuration Form */}
+      <VmAutoConfigForm />
+
+      <Separator className="bg-sidebar-border" />
+
+      {/* Manual Configuration Card */}
+      <Card className="bg-sidebar border-sidebar-border shadow-md">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg text-sidebar-foreground">
+            <SlidersHorizontal className="h-5 w-5 text-primary" />
+            Manual VM Configuration
+          </CardTitle>
+          <CardDescription className="text-sidebar-foreground/70">
+            Fine-tune your VM's resources and operating system.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1">
+            <Label htmlFor="manual-cpu" className="flex items-center gap-1 text-sm text-sidebar-foreground/80">
+              <Cpu className="h-4 w-4" /> CPU Cores
+            </Label>
+            <Input 
+              id="manual-cpu" 
+              type="number" 
+              value={manualCpu} 
+              onChange={(e) => setManualCpu(parseInt(e.target.value) || 1)} 
+              min="1"
+              className="bg-input border-border focus:ring-primary text-sidebar-foreground" 
+            />
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="manual-ram" className="flex items-center gap-1 text-sm text-sidebar-foreground/80">
+              <MemoryStick className="h-4 w-4" /> RAM (GB)
+            </Label>
+            <Input 
+              id="manual-ram" 
+              type="number" 
+              value={manualRam} 
+              onChange={(e) => setManualRam(parseInt(e.target.value) || 1)} 
+              min="1"
+              className="bg-input border-border focus:ring-primary text-sidebar-foreground" 
+            />
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="manual-disk" className="flex items-center gap-1 text-sm text-sidebar-foreground/80">
+              <HardDrive className="h-4 w-4" /> Disk Size (GB)
+            </Label>
+            <Input 
+              id="manual-disk" 
+              type="number" 
+              value={manualDisk} 
+              onChange={(e) => setManualDisk(parseInt(e.target.value) || 10)} 
+              min="10"
+              className="bg-input border-border focus:ring-primary text-sidebar-foreground" 
+            />
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="manual-os" className="flex items-center gap-1 text-sm text-sidebar-foreground/80">
+              <Laptop className="h-4 w-4" /> Operating System
+            </Label>
+            <Select value={manualOs} onValueChange={setManualOs}>
+              <SelectTrigger id="manual-os" className="w-full bg-input border-border focus:ring-primary text-sidebar-foreground">
+                <SelectValue placeholder="Select OS" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-popover text-popover-foreground">
+                <SelectItem value="linux">Linux (Generic)</SelectItem>
+                <SelectItem value="ubuntu">Linux (Ubuntu)</SelectItem>
+                <SelectItem value="debian">Linux (Debian)</SelectItem>
+                <SelectItem value="centos">Linux (CentOS)</SelectItem>
+                <SelectItem value="windows_server">Windows Server</SelectItem>
+                <SelectItem value="windows_desktop">Windows Desktop</SelectItem>
+                <SelectItem value="macos">macOS</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-end">
+          <Button onClick={handleApplyManualConfig} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+            Apply Manual Configuration
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
+
