@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -64,13 +65,13 @@ export default function VmAutoConfigForm() {
   };
 
   return (
-    <Card className="w-full shadow-lg border-border bg-card">
+    <Card className="w-full shadow-md bg-sidebar border-sidebar-border">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Lightbulb className="h-6 w-6 text-accent" />
+        <CardTitle className="flex items-center gap-2 text-sidebar-foreground">
+          <Lightbulb className="h-6 w-6 text-primary" />
           <span>AI VM Configurator</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-sidebar-foreground/70">
           Describe the applications you plan to run, and our AI will suggest optimal VM settings.
         </CardDescription>
       </CardHeader>
@@ -82,19 +83,19 @@ export default function VmAutoConfigForm() {
               name="applications"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="applications" className="text-sm font-medium text-foreground/80">
+                  <FormLabel htmlFor="applications" className="text-sm font-medium text-sidebar-foreground/80">
                     Applications (comma-separated)
                   </FormLabel>
                   <FormControl>
                     <Textarea
                       id="applications"
                       placeholder="e.g., Web Server, Database, Development IDE, Minecraft Server"
-                      className="min-h-[80px] bg-input border-border focus:ring-primary"
+                      className="min-h-[80px] bg-input border-border focus:ring-primary text-sidebar-foreground"
                       {...field}
                       aria-describedby="applications-help"
                     />
                   </FormControl>
-                  <p id="applications-help" className="text-xs text-muted-foreground">
+                  <p id="applications-help" className="text-xs text-muted-foreground"> {/* text-muted-foreground is standard for help text */}
                     The more specific you are, the better the suggestion.
                   </p>
                   <FormMessage />
@@ -130,16 +131,16 @@ export default function VmAutoConfigForm() {
       {suggestion && !error && (
         <div className="p-4 m-4 border border-accent/50 bg-accent/10 rounded-md text-accent-foreground">
           <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-accent">
-            <Lightbulb className="h-5 w-5" />
+            <Lightbulb className="h-5 w-5" /> {/* Icon inherits text-accent from h3 */}
             Suggested Configuration:
           </h3>
-          <div className="space-y-2 text-sm">
-            <p className="flex items-center gap-2"><Cpu className="h-4 w-4 text-foreground/70" /> CPU Cores: <span className="font-medium text-foreground">{suggestion.cpu}</span></p>
-            <p className="flex items-center gap-2"><MemoryStick className="h-4 w-4 text-foreground/70" /> RAM: <span className="font-medium text-foreground">{suggestion.ram} GB</span></p>
+          <div className="space-y-2 text-sm"> {/* Children inherit text-accent-foreground from parent div */}
+            <p className="flex items-center gap-2"><Cpu className="h-4 w-4 opacity-70" /> CPU Cores: <span className="font-medium">{suggestion.cpu}</span></p>
+            <p className="flex items-center gap-2"><MemoryStick className="h-4 w-4 opacity-70" /> RAM: <span className="font-medium">{suggestion.ram} GB</span></p>
             {suggestion.notes && (
               <div>
-                <p className="font-medium mt-2 text-foreground/80">Notes:</p>
-                <p className="text-foreground/90 whitespace-pre-wrap">{suggestion.notes}</p>
+                <p className="font-medium mt-2 opacity-80">Notes:</p>
+                <p className="opacity-90 whitespace-pre-wrap">{suggestion.notes}</p>
               </div>
             )}
           </div>
