@@ -1,19 +1,19 @@
 
 import AppLayout from '@/components/layout/app-layout';
-import VmDisplay from '@/components/features/vm-display';
-import VmControls from '@/components/features/vm-controls';
+import ContainerDisplay from '@/components/features/container-display'; // Renamed import
+import ContainerControls from '@/components/features/container-controls'; // Renamed import
 import Header from '@/components/layout/header';
 import AppLogoName from '@/components/layout/app-logo-name';
-// SheetTitle import is no longer needed here as it's handled by MobileAwareSidebarHeader
+import { SheetTitle } from '@/components/ui/sheet'; // Keep for MobileAwareSidebarHeader
 
 export default function HomePage() {
   return (
     <AppLayout
-      sidebarHeaderContent={<AppLogoName />} // Pass AppLogoName directly
-      sidebarNavigationContent={<VmControls />}
+      sidebarHeaderContent={<AppLogoName />}
+      sidebarNavigationContent={<ContainerControls />} // Use renamed component
       mainHeaderContent={<Header />}
     >
-      <VmDisplay />
+      <ContainerDisplay /> {/* Use renamed component */}
     </AppLayout>
   );
 }

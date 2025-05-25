@@ -1,19 +1,17 @@
+
 'use server';
 
-import { suggestVmSettings as suggestVmSettingsFlow, type SuggestVmSettingsInput, type SuggestVmSettingsOutput } from '@/ai/flows/suggest-vm-settings';
+import { suggestContainerSettings as suggestContainerSettingsFlow, type SuggestContainerSettingsInput, type SuggestContainerSettingsOutput } from '@/ai/flows/suggest-container-settings'; // Renamed flow and types
 
-export async function suggestVmSettings(input: SuggestVmSettingsInput): Promise<SuggestVmSettingsOutput | { error: string }> {
+export async function suggestContainerSettings(input: SuggestContainerSettingsInput): Promise<SuggestContainerSettingsOutput | { error: string }> { // Renamed function and types
   try {
-    const result = await suggestVmSettingsFlow(input);
+    const result = await suggestContainerSettingsFlow(input);
     return result;
   } catch (error) {
-    console.error("Error in suggestVmSettings action:", error);
-    // It's good practice to not expose raw error messages to the client
-    // For debugging, you might log the specific error server-side
-    // For the client, return a generic error message
+    console.error("Error in suggestContainerSettings action:", error);
     if (error instanceof Error) {
-        return { error: `An error occurred while suggesting VM settings: ${error.message}`};
+        return { error: `An error occurred while suggesting container settings: ${error.message}`};
     }
-    return { error: 'An unexpected error occurred while suggesting VM settings.' };
+    return { error: 'An unexpected error occurred while suggesting container settings.' };
   }
 }

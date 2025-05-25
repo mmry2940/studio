@@ -1,4 +1,4 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/suggest-vm-settings.ts';
+import '@/ai/flows/suggest-container-settings.ts'; // Renamed flow

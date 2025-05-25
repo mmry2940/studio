@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'RemoteBox',
-  description: 'Manage and interact with virtual machines seamlessly.',
+  description: 'Manage and interact with container instances seamlessly.',
 };
 
 export default function RootLayout({
