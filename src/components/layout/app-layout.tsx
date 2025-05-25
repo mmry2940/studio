@@ -2,7 +2,7 @@
 "use client";
 
 import type { ReactNode } from 'react';
-import React, { useState, useEffect } from 'react';
+import React from 'react'; // Removed useState and useEffect as 'mounted' state is removed
 import {
   SidebarProvider,
   Sidebar,
@@ -25,18 +25,14 @@ interface AppLayoutProps {
 
 function MobileAwareSidebarHeader({ content }: { content: ReactNode }) {
   const { isMobile } = useSidebar();
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    // Render content directly during SSR and initial client render before isMobile is settled
-    return <>{content}</>;
+  // If isMobile is true, we are in mobile view (Sheet is active), so SheetTitle is required.
+  // The useIsMobile hook (used by useSidebar) correctly handles deferring true until client-side.
+  if (isMobile) {
+    return <SheetTitle asChild>{content}</SheetTitle>;
   }
-
-  return isMobile ? <SheetTitle asChild>{content}</SheetTitle> : <>{content}</>;
+  // Otherwise, for desktop view, render content directly.
+  return <>{content}</>;
 }
 
 export default function AppLayout({
