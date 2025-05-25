@@ -1,6 +1,8 @@
+
 "use client";
 
 import type { ReactNode } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SidebarProvider,
   Sidebar,
@@ -9,7 +11,9 @@ import {
   SidebarHeader as ShadSidebarHeader,
   SidebarFooter as ShadSidebarFooter,
   SidebarRail,
+  useSidebar,
 } from '@/components/ui/sidebar';
+import { SheetTitle } from '@/components/ui/sheet';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -17,6 +21,22 @@ interface AppLayoutProps {
   sidebarNavigationContent: ReactNode;
   sidebarFooterContent?: ReactNode;
   mainHeaderContent: ReactNode;
+}
+
+function MobileAwareSidebarHeader({ content }: { content: ReactNode }) {
+  const { isMobile } = useSidebar();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // Render content directly during SSR and initial client render before isMobile is settled
+    return <>{content}</>;
+  }
+
+  return isMobile ? <SheetTitle asChild>{content}</SheetTitle> : <>{content}</>;
 }
 
 export default function AppLayout({
@@ -35,7 +55,7 @@ export default function AppLayout({
         className="border-r border-sidebar-border"
       >
         <ShadSidebarHeader className="p-4 border-b border-sidebar-border">
-          {sidebarHeaderContent}
+          <MobileAwareSidebarHeader content={sidebarHeaderContent} />
         </ShadSidebarHeader>
         <SidebarContent className="p-2 md:p-4">
           {sidebarNavigationContent}
